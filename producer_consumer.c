@@ -15,7 +15,7 @@ sem_t full_sem; //  stop producer if buffer is full
 sem_t empty_sem; // stop consumer if buffer is empty 
  
  
-void insertbuffer(buffer_t value) 
+void insertbuffer(buffer_t value)  
 {
     if (buffer_index < SIZE) 
     {
@@ -81,7 +81,7 @@ void *consumer(void *thread_n)
  
 int main(int argc, int **argv) 
 {
-   printf("%d\n", 1234);
+    
     buffer_index = 0;
  
     sem_init(&buffer_mutex, // sem_t *sem
@@ -90,8 +90,8 @@ int main(int argc, int **argv)
     sem_init(&full_sem,0,SIZE);
     sem_init(&empty_sem,0,0);
     
-    pthread_t thread_producer[NUMB_THREADS];
-    pthread_t thread_consumer[NUMB_THREADS];
+    pthread_t thread_producer[NUMB_THREADS];// threads for producer   
+    pthread_t thread_consumer[NUMB_THREADS];// threads for producer
     int thread_numb[NUMB_THREADS];
     
     for (int i = 0; i < NUMB_THREADS;i++) 

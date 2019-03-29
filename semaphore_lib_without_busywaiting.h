@@ -7,8 +7,7 @@ typedef struct
 {
   pthread_cond_t* val;
   struct node* next;
-   	 
-}node;
+}node; // struct for each element in qeueue of a semaphore
 
 typedef struct 
 {
@@ -17,9 +16,9 @@ typedef struct
   pthread_mutex_t mutex_for_queue_operations;
   int len;
 
-}queue;
+}queue; // struct for the queue in the semaphore 
 
-void push(queue* q ,pthread_cond_t* g)
+void push(queue* q ,pthread_cond_t* g) 
 {
    pthread_mutex_lock(&q->mutex_for_queue_operations);
     node* temp=( node*)malloc(sizeof(node));
@@ -77,36 +76,33 @@ pthread_cond_t* pop(queue* q)
 
 typedef struct
 {
-   atomic_int s;
-   queue Q;
-   pthread_mutex_t lock1;
+   atomic_int s;  // semaphore varible
+   queue Q;           // queue for storing blocked threads
+   pthread_mutex_t lock1; 
    pthread_mutex_t lock2;
   
    
    
-} sem_t;
+} sem_t; // semaphore struct 
  
 
 
-void sem_init( sem_t* temp,int pshared,unsigned int val)
+void sem_init( sem_t* temp,int pshared,unsigned int val) // for semaphore inilization
  {
-    temp->s=val;
+    temp->s=val; // assign value
    // thread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
  }
 
 
- void sem_wait(sem_t* temp)
+ void sem_wait(sem_t* temp) //  same AS wait(S)
  {
- 	pthread_mutex_lock(&temp->lock1);
+ 	pthread_mutex_lock(&temp->lock1); // saving from other threads   
     temp->s--;
     if(temp->s<0)
     {
       pthread_cond_t* cond_temp=(pthread_cond_t*)malloc(sizeof(pthread_cond_t));
-       push(&temp->Q,cond_temp); 
-       
-        
-
-        pthread_cond_wait(cond_temp,&temp->lock1);
+      push(&temp->Q,cond_temp); 
+      pthread_cond_wait(cond_temp,&temp->lock1); //block(temp) blocking temp thread 
 
             
     } 
@@ -118,18 +114,16 @@ void sem_init( sem_t* temp,int pshared,unsigned int val)
 
  void sem_post(sem_t* temp)
  {
-  pthread_mutex_lock(&temp->lock2);
+  pthread_mutex_lock(&temp->lock2); // saving from other threads
 
-    temp->s++;
+    temp->s++;    
     if(temp->s<=0)
     {
       
     	pthread_cond_t* cond=pop(&temp->Q);
     	if(cond!=NULL)
       {
-      pthread_cond_signal(cond);
-         
-      
+      pthread_cond_signal(cond);   // wake up (selected thread)
       }
 
     }
