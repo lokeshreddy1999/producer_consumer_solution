@@ -97,4 +97,4 @@ signal(empty);
 }
 
 
-apart from this code in semaphore implemtation i used linked list bascially it is the queue formed by linked list  
+apart from this code in semaphore implemtation i used queue bascially it is the queue formed by linked list  
